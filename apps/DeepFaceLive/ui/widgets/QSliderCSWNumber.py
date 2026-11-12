@@ -37,7 +37,7 @@ class QSliderCSWNumber(QCSWControl):
             step = config.step
 
             int_min = 0
-            int_max = int( (max-min) / step )
+            int_max = int(round( (max-min) / step ))
 
             self._slider.setMinimum(int_min)
             self._slider.setMaximum(int_max)
@@ -49,7 +49,7 @@ class QSliderCSWNumber(QCSWControl):
     def _on_csw_number(self, value):
         if value is not None:
             config = self._config
-            value = (value-config.min) / config.step
+            value = int(round( (value-config.min) / config.step ))
             with qtx.BlockSignals([self._slider]):
                 self._slider.setValue(value)
 

@@ -100,7 +100,15 @@ class fixPathAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, os.path.abspath(os.path.expanduser(values)))
 
+def _excepthook(exc_type, exc_value, exc_tb):
+    # PyQt6 calls qFatal() (silent abort) on unhandled exceptions in slots
+    # unless sys.excepthook is overridden. Print the traceback and keep running.
+    import traceback
+    traceback.print_exception(exc_type, exc_value, exc_tb)
+
 if __name__ == '__main__':
+    import sys
+    sys.excepthook = _excepthook
     main()
 
 # import code

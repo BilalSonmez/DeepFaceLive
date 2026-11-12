@@ -32,7 +32,8 @@ class FaceMarkerLBF:
         lmrks_list = []
         for n in range( max(1,N) ):
             _, lmrks = self.marker.fit(feed_img[n], np.array([ [0,0,W,H] ]) )
-            lmrks = lmrks[0][0]
+            # OpenCV 4.x returns (1,68,2), OpenCV 5.x returns (68,1,2)
+            lmrks = np.asarray(lmrks[0]).reshape(-1, 2)
 
             lmrks_list.append(lmrks)
 

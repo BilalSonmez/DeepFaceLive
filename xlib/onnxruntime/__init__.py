@@ -3,6 +3,8 @@
 # a system-wide CUDA Toolkit. Needed for RTX 50xx (Blackwell, sm_120) setups.
 try:
     import onnxruntime as _rt
+    # hide environment-level warnings (e.g. 'No registered plugin EP device found')
+    _rt.set_default_logger_severity(3)
     if hasattr(_rt, 'preload_dlls') and 'CUDAExecutionProvider' in _rt.get_available_providers():
         _rt.preload_dlls()
 except Exception as e:

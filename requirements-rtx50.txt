@@ -1,0 +1,20 @@
+# NVIDIA RTX 50xx (Blackwell, sm_120) ve diğer NVIDIA kartlar için test edilmiş sürümler.
+# Python 3.12, Windows 11, NVIDIA sürücüsü 580+ (CUDA 13 desteği) gerekir.
+# CUDA 13 ve cuDNN 9 çalışma zamanı pip paketleriyle (nvidia-*) gelir; sistem geneline CUDA Toolkit kurmak gerekmez.
+onnxruntime-gpu[cuda,cudnn]==1.31.1
+nvidia-cublas==13.10.0.20
+nvidia-cuda-nvrtc==13.5.37
+nvidia-cuda-runtime==13.5.37
+nvidia-cudnn-cu13==9.28.1.4
+nvidia-cufft==12.5.0.14
+nvidia-curand==10.4.5.25
+nvidia-nvjitlink==13.5.37
+numpy==2.5.4
+opencv-contrib-python==5.0.0.93
+PyQt6==6.12.0
+PyQt6-Qt6==6.12.0
+PyQt6_sip==13.13.1
+onnx==1.23.2
+protobuf==7.36.2
+h5py==3.16.0
+numexpr==2.14.2

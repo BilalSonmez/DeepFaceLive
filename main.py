@@ -109,6 +109,10 @@ def _excepthook(exc_type, exc_value, exc_tb):
 if __name__ == '__main__':
     import sys
     sys.excepthook = _excepthook
+    # local ffmpeg/ffprobe (see KURULUM.md), used by the video file source
+    _ffmpeg_dir = Path(__file__).parent / '_tools' / 'ffmpeg'
+    if _ffmpeg_dir.exists():
+        os.environ['PATH'] = str(_ffmpeg_dir) + os.pathsep + os.environ.get('PATH', '')
     main()
 
 # import code

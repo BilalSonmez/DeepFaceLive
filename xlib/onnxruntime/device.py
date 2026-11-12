@@ -160,12 +160,18 @@ def _initialize_ort_devices_info():
 
             dxgi_factory = lib_dxgi.create_DXGIFactory4()
             if dxgi_factory is not None:
+                # Indirect display drivers (e.g. Parsec Virtual Display Adapter) can make DXGI
+                # enumerate the same physical GPU twice with a different LUID. Keep the first one.
+                seen_adapters = set()
                 for i in itertools.count():
                     adapter = dxgi_factory.enum_adapters1(i)
                     if adapter is not None:
                         desc = adapter.get_desc1()
+                        adapter_key = (desc.Description, desc.VendorId, desc.DeviceId, desc.SubSysId, desc.Revision, desc.DedicatedVideoMemory)
                         if desc.Flags != lib_dxgi.DXGI_ADAPTER_FLAG.DXGI_ADAPTER_FLAG_SOFTWARE and \
-                           not (desc.VendorId == 0x1414 and desc.DeviceId == 0x8c):
+                           not (desc.VendorId == 0x1414 and desc.DeviceId == 0x8c) and \
+                           adapter_key not in seen_adapters:
+                            seen_adapters.add(adapter_key)
                             devices.append ({'index'     : i,
                                              'execution_provider' : 'DmlExecutionProvider',
                                              'name'      : desc.Description,

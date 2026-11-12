@@ -108,7 +108,7 @@ def _initialize_ort_devices_info():
         devices = []
         prs = rt.get_available_providers()
         if not lib_appargs.get_arg_bool('NO_CUDA') and 'CUDAExecutionProvider' in prs:
-            os.environ['CUDA_​CACHE_​MAXSIZE'] = '2147483647'
+            os.environ['CUDA_CACHE_MAXSIZE'] = '2147483647'
             try:
                 libnames = ('libcuda.so', 'libcuda.dylib', 'nvcuda.dll')
                 for libname in libnames:

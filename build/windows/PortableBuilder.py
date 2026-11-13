@@ -129,7 +129,7 @@ set "PYTHONPATH="
 set "PYTHONNOUSERSITE=1"
 set "PATH=%~dp0_internal\python;%~dp0_internal\DeepFaceLive\_tools\ffmpeg;%PATH%"
 echo DeepFaceLive ({backend_title}) - this console shows the application log, do not close it.
-echo Bu pencere uygulama gunluklerini gosterir, kapatmayin.
+echo Bu pencere uygulama günlüklerini gösterir, kapatmayın.
 "%~dp0_internal\python\python.exe" "%~dp0_internal\DeepFaceLive\main.py" run DeepFaceLive --userdata-dir "%~dp0userdata"{extra}
 if errorlevel 1 (
     echo.

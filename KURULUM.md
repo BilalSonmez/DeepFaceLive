@@ -1,6 +1,6 @@
 # DeepFaceLive: RTX 50 serisi (Blackwell) için güncel kurulum
 
-Bu depo, arşivlenmiş [iperov/DeepFaceLive](https://github.com/iperov/DeepFaceLive) projesinin güncel Python ve GPU kütüphaneleriyle çalışacak şekilde düzenlenmiş bir kopyasıdır. Orijinal proje GPL-3.0 lisanslıdır. Lisans (`LICENSE`) ve orijinal telif bildirimleri değiştirilmeden korunmuştur.
+Bu depo, arşivlenmiş [iperov/DeepFaceLive](https://github.com/iperov/DeepFaceLive) projesinin güncel Python ve GPU kütüphaneleriyle çalışacak şekilde düzenlenmiş bir topluluk fork'udur. Orijinal proje GPL-3.0 lisanslıdır. Lisans (`LICENSE`) ve orijinal telif bildirimleri değiştirilmeden korunmuştur.
 
 Orijinal proje Python 3.8, onnxruntime-gpu 1.15 (CUDA 11.8 + cuDNN 8), numpy 1.21 ve PyQt6 6.5 sürümlerine sabitlenmişti. Bu sürümler RTX 50 serisi (sm_120) kartları desteklemiyor ve Python 3.12 için paketleri de yok. Bu kopya aşağıdaki sürümlerle test edildi:
 
@@ -15,7 +15,9 @@ Orijinal proje Python 3.8, onnxruntime-gpu 1.15 (CUDA 11.8 + cuDNN 8), numpy 1.2
 | PyQt6 | 6.12.0 |
 | ffmpeg / ffprobe | 9.0.2 (proje içinde, `_tools\ffmpeg`) |
 
-Test edilen makine: Windows 11, RTX 5070 12 GB, NVIDIA sürücüsü 621.14.
+Test edilen sistem: Windows 11, RTX 5070 12 GB, NVIDIA sürücüsü 621 serisi.
+
+> **Kurmadan kullanmak isterseniz:** [Releases](https://github.com/BilalSonmez/DeepFaceLive/releases) sayfasındaki taşınabilir paketi indirin. Gömülü Python, bütün bağımlılıklar ve ffmpeg içindedir; açıp `baslat.bat` dosyasına çift tıklamanız yeterli. Aşağıdaki adımlar kaynaktan kurulum içindir.
 
 ## 1. Gereksinimler
 
@@ -58,7 +60,7 @@ kurulum.bat directml
 baslat.bat directml
 ```
 
-Bu bilgisayarda DirectML yolu CUDA'ya yakın hızda çalıştı (ayrıntılar aşağıda).
+Test sisteminde DirectML yolu CUDA'ya yakın hızda çalıştı (ayrıntılar aşağıda).
 
 ## 3. Başlatma
 
@@ -88,12 +90,12 @@ Her modülün sol üstündeki güç düğmesi o modülü açıp kapatır.
 
 - **Camera source** modülünü açın. **Device index** kameranın sırası (0, 1, ...), **Driver** olarak önce `DirectShow` deneyin. Görüntü gelmezse `Microsoft Media Foundation` seçin.
 - Çözünürlük ve FPS'i aynı modülden ayarlayabilirsiniz. 1280x720 çoğu durumda yeterlidir. Çözünürlük arttıkça yüz tespiti ve birleştirme yavaşlar.
-- Bu bilgisayarda kamera olarak yalnızca **Iriun Webcam** sürücüleri görünüyor (telefonu webcam yapan uygulama). Görüntü gelmesi için telefonda Iriun uygulamasının açık ve bağlı olması gerekir.
+- Telefonu webcam olarak kullanan uygulamalar (Iriun, DroidCam vb.) da kamera olarak listelenir. Görüntü gelmesi için telefondaki uygulamanın açık ve bağlı olması gerekir.
 - Kamerayı aynı anda yalnızca bir uygulama açabilir. DeepFaceLive kamerayı kullanırken Zoom/Discord gibi uygulamalarda gerçek kamerayı değil, aşağıdaki sanal kamerayı seçin.
 
 ## 7. Sanal kamera çıkışı (OBS Virtual Camera)
 
-DeepFaceLive'ın kendi sanal kamera sürücüsü yoktur. Görüntü OBS Studio (bu bilgisayarda 32.2.2 kurulu) üzerinden sanal kameraya verilir. İki yol var:
+DeepFaceLive'ın kendi sanal kamera sürücüsü yoktur. Görüntü OBS Studio (30 veya üstü) üzerinden sanal kameraya verilir. İki yol var:
 
 **Yol A: pencere yakalama (önerilen, en düşük gecikme)**
 1. DeepFaceLive'da **Stream output** > Source = `Merged frame`, ardından **window** düğmesine basın. Ayrı bir çıktı penceresi açılır.
@@ -110,7 +112,7 @@ Yol B'de ffmpeg kodlama yaptığı için birkaç kare gecikme ve küçük bir FP
 
 ## 8. Ölçülen performans (RTX 5070)
 
-Test girişi: kamu malı (public domain) bir tablodan (Mona Lisa, Wikimedia Commons) üretilmiş 1280x720, 30 FPS'lik hareketli video. Model: `Joker.dfm` (224x224). Ölçümler sırasında bilgisayarda bir oyun da açıktı, yani GPU paylaşılıyordu.
+Test girişi: kamu malı (public domain) bir tablodan (Mona Lisa, Wikimedia Commons) üretilmiş 1280x720, 30 FPS'lik hareketli video. Model: `Joker.dfm` (224x224). Ölçümler sırasında GPU'yu başka bir uygulama da kullanıyordu, gerçek değerler biraz daha yüksek olabilir.
 
 **Uygulamanın kendisi (GUI, tüm modüller ayrı süreçlerde, paralel):**
 
@@ -149,7 +151,8 @@ Kendi bilgisayarınızda ölçmek için:
 | `cublasLt64_13.dll ... is missing` | Bu kopyada DLL'ler `onnxruntime.preload_dlls()` ile otomatik yükleniyor. Hata görürseniz sanal ortamı silip (`.venv`) kurulumu tekrarlayın. |
 | File source'ta `[WinError 2] The system cannot find the file specified` | ffmpeg/ffprobe bulunamadı. `_tools\ffmpeg` klasöründe `ffprobe.exe` olmalı. `kurulum.bat` bu dosyaları indirir. |
 | Uygulama hiçbir hata göstermeden kapanıyor | Bu kopyada yakalanmayan Qt hataları siyah pencereye yazılır. Oradaki traceback'e bakın. |
-| DirectML'de aynı GPU iki kez görünüyordu | Parsec Virtual Display Adapter yüzünden. Bu kopyada tekrar eden adaptör listeden çıkarılıyor. |
+| DirectML'de aynı GPU iki kez görünüyordu | Sanal ekran sürücüleri (ör. Parsec Virtual Display Adapter) yüzünden. Bu kopyada tekrar eden adaptör listeden çıkarılıyor. |
+| CUDA'dan DirectML'e (ya da tersine) geçince Face swap (DFM) `CUDAExecutionProvider is not avaiable` hatası veriyor, görüntü akmıyor | Kayıtlı ayarlar eski aygıtı gösteriyor. **File > Reset modules settings** ile modül ayarlarını sıfırlayın ya da iki paket için ayrı `userdata` klasörü kullanın. |
 | FPS düşük | Face merger aygıtını GPU yapın, Face detector'da Window size'ı küçültün (ör. 320), kaynak çözünürlüğünü 1280x720'ye indirin, arka planda GPU kullanan oyunları kapatın. |
 
 ## 10. Bu kopyada orijinale göre yapılan değişiklikler
@@ -159,10 +162,19 @@ Kendi bilgisayarınızda ölçmek için:
 - PyQt6 / Python 3.10+: Qt fonksiyonlarına float yerine int geçiliyor (`QSlider.setValue`, `QProgressBar.setValue`, `QRect`). Eski hâliyle uygulama açılır açılmaz sessizce kapanıyordu.
 - `main.py`: yakalanmayan Qt slot hataları süreci öldürmek yerine loglanıyor. Proje içindeki `_tools\ffmpeg` PATH'e ekleniyor.
 - OpenCV 5: `FacemarkLBF.fit` çıktı şekli değişikliği.
-- DirectML: Parsec sanal ekranı yüzünden tekrar listelenen GPU ayıklanıyor.
-- Yeni dosyalar: `kurulum.bat`, `baslat.bat`, `requirements-rtx50.txt`, `requirements-directml.txt`, `scripts/pipeline_benchmark.py`, bu belge.
+- DirectML: sanal ekran sürücüleri yüzünden tekrar listelenen GPU ayıklanıyor.
+- Yeni dosyalar: `kurulum.bat`, `baslat.bat`, `requirements-rtx50.txt`, `requirements-directml.txt`, `scripts/pipeline_benchmark.py`, `build/windows/PortableBuilder.py`, bu belge.
 
-`build/windows/WindowsBuilder.py` ve `build/linux/Dockerfile` (taşınabilir paket üretimi) güncellenmedi. Bunlar hâlâ eski sürümlere işaret ediyor.
+## 11. Taşınabilir paketi kendiniz üretmek
+
+`build/windows/PortableBuilder.py` gömülü Python 3.12 ile sistemde Python gerektirmeyen bir klasör üretir. Betiği çalıştırmak için Python 3.12 gerekir (yalnızca pip için kullanılır):
+
+```bat
+py -3.12 build\windows\PortableBuilder.py --backend cuda --release-dir C:\dfl_build\DeepFaceLive_NVIDIA
+py -3.12 build\windows\PortableBuilder.py --backend directml --release-dir C:\dfl_build\DeepFaceLive_DirectX12
+```
+
+`--pack-7zr 7za.exe --volume-size 1900m` eklerseniz klasör 2 GB'tan küçük `.7z` parçalarına bölünür. Eski `build/windows/WindowsBuilder.py` ve `build/linux/Dockerfile` güncellenmedi, hâlâ eski sürümlere işaret ediyor.
 
 ## Lisans
 

@@ -1,3 +1,5 @@
+# Upstream rule: ignore everything, then allow source/document file types.
+# Because "*" also matches folders, new files in sub-folders must be added with "git add -f".
 *
 !*.py
 !*.md
@@ -6,3 +8,31 @@
 !*.png
 !requirements*
 !*.bat
+
+# Never commit these, even with an allowed extension (local, personal or large files):
+# virtual environments, user data (settings, downloaded DFM models, samples, outputs),
+# screenshots, bundled tools (ffmpeg), build output, caches and secrets.
+.venv*/
+userdata/
+_ekran/
+_tools/
+_build/
+Builds/
+__pycache__/
+/*.png
+/*.jpg
+*.dfm
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.webm
+*.dat
+*.7z
+*.7z.*
+*.zip
+*.log
+.env
+.env.*
+*.pem
+*.key

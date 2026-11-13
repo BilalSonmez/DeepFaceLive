@@ -1,3 +1,119 @@
+# DeepFaceLive: community fork for RTX 50 and current Python
+
+> **This is an unofficial community fork of [iperov/DeepFaceLive](https://github.com/iperov/DeepFaceLive)**, which has been archived by its author.
+> All credit for DeepFaceLive goes to **iperov and the original contributors**. This fork only updates dependencies and fixes compatibility so the app runs on current hardware and software.
+> The original README follows further below, unchanged.
+
+**[English](#english)** | **[Türkçe](#türkçe)**
+
+---
+
+## English
+
+### What changed
+
+The original project was pinned to Python 3.8, onnxruntime-gpu 1.15 (CUDA 11.8 + cuDNN 8), numpy 1.21 and PyQt6 6.5. Those builds do not support RTX 50 series (Blackwell, sm_120) GPUs and have no Python 3.12 packages. This fork runs on:
+
+| Component | Original | This fork |
+|---|---|---|
+| Python | 3.8 | **3.12.10** |
+| onnxruntime-gpu | 1.15.1 (CUDA 11.8, cuDNN 8) | **1.31.1** (CUDA 13, cuDNN 9, from pip) |
+| onnxruntime-directml (fallback) | 1.15.1 | **1.24.4** |
+| numpy | 1.21.6 | **2.5.4** |
+| OpenCV (contrib) | 4.8.0 | **5.0.0** |
+| PyQt6 | 6.5.1 | **6.12.0** |
+| ffmpeg | 4.4 | **9.0.2** |
+
+Code changes are small compatibility fixes (Python 3.10+ `collections.abc`, removed numpy aliases, PyQt6 int arguments, OpenCV 5 API, CUDA DLL preloading from pip packages, duplicate DirectML adapters). See [KURULUM.md](KURULUM.md) (Turkish), section 10, for the full list.
+
+### Supported GPUs
+
+- **NVIDIA RTX 50 series (Blackwell)**: tested on an RTX 5070, about 30 FPS at 1280x720 in the full app.
+- **NVIDIA RTX 30 / 40 series** and other NVIDIA GPUs supported by CUDA 13. Needs an NVIDIA driver with **CUDA 13 support (580 or newer)**. Check with `nvidia-smi`: `CUDA Version` must be 13.0 or higher.
+- **Any DirectX 12 GPU (AMD, Intel, older NVIDIA)**: DirectML fallback package, or `kurulum.bat directml` from source.
+- You do **not** need to install the CUDA Toolkit or cuDNN: the CUDA 13 / cuDNN 9 runtime comes as pip packages.
+
+### Install
+
+**Option A: portable package (no Python needed)**
+
+1. Download all parts (`DeepFaceLive_NVIDIA.7z.001`, `.002`, ...) from the [latest release](https://github.com/BilalSonmez/DeepFaceLive/releases/latest) into one folder, or the smaller DirectX 12 package.
+2. Install [7-Zip](https://www.7-zip.org/) (or NanaZip), right-click `DeepFaceLive_NVIDIA.7z.001` and choose **Extract here**. The other parts are read automatically.
+3. Open the extracted folder and double-click **`start.bat`** (or `baslat.bat`). `check_devices.bat` lists the GPUs the app can see.
+
+**Option B: from source**
+
+1. Install [Python 3.12 (64-bit)](https://www.python.org/downloads/) with the "py launcher" option.
+2. Clone this repository and double-click **`kurulum.bat`**. It creates `.venv`, installs `requirements-rtx50.txt`, merges the split model files and downloads ffmpeg. For DirectML: `kurulum.bat directml`.
+3. Start with **`baslat.bat`** (DirectML: `baslat.bat directml`).
+
+### Quick start
+
+1. Turn on **File source** (video file) or **Camera source**. The portable package includes a public-domain sample: `userdata\samples\mona_lisa_pan.mp4`.
+2. **Face detector**: YoloV5, device `[CUDA]`. **Face marker**: Google FaceMesh. **Face aligner**: defaults.
+3. **Face swap (DFM)**: pick a model. It is downloaded automatically from the upstream releases into `userdata\dfm_models` (300-700 MB each).
+4. **Face merger**: set the device to your GPU (OpenCL) for the best speed.
+5. **Stream output**: Source = `Merged frame`, press **window**. Use OBS (Window Capture + Virtual Camera) to send it to video-call apps.
+
+### Responsible use
+
+Use DeepFaceLive **only with the faces of people who have given their consent, and only for lawful purposes**. Do **not** use it to impersonate anyone, to deceive or defraud people, to bypass identity verification, or to create non-consensual or misleading content. Laws on deepfakes, personality rights and fraud apply to you, and you are responsible for what you create with this software.
+
+### License and attribution
+
+DeepFaceLive is © iperov and contributors, licensed under **GPL-3.0** (see [LICENSE](LICENSE)). The original copyright notices are kept, and the changes in this fork are released under the same license. Upstream: <https://github.com/iperov/DeepFaceLive>. The portable packages bundle ffmpeg (GPL, <https://ffmpeg.org>, builds by [GyanD/codexffmpeg](https://github.com/GyanD/codexffmpeg)) and the Python, onnxruntime, NVIDIA CUDA/cuDNN, OpenCV and Qt runtimes under their own licenses.
+
+---
+
+## Türkçe
+
+### Neler değişti
+
+Bu depo, yazarı tarafından arşivlenmiş [iperov/DeepFaceLive](https://github.com/iperov/DeepFaceLive) projesinin **resmî olmayan topluluk fork'udur**. Emeğin tamamı **iperov'a ve orijinal katkıcılara** aittir. Bu fork yalnızca bağımlılıkları güncelliyor ve uygulamanın güncel donanım ve yazılımda çalışması için uyumluluk düzeltmeleri yapıyor.
+
+Orijinal proje Python 3.8, onnxruntime-gpu 1.15 (CUDA 11.8 + cuDNN 8), numpy 1.21 ve PyQt6 6.5 sürümlerine sabitliydi. Bu sürümler RTX 50 serisi (Blackwell, sm_120) kartları desteklemiyor. Güncel sürümler yukarıdaki tabloda. Ayrıntılı Türkçe kurulum ve sorun giderme rehberi: **[KURULUM.md](KURULUM.md)**.
+
+### Desteklenen GPU'lar
+
+- **NVIDIA RTX 50 serisi (Blackwell)**: RTX 5070'te test edildi. Uygulamanın tamamında 1280x720'de yaklaşık 30 FPS.
+- **NVIDIA RTX 30 / 40 serisi** ve CUDA 13'ün desteklediği diğer NVIDIA kartlar. **CUDA 13'ü destekleyen sürücü (580 veya üstü)** gerekir. `nvidia-smi` çıktısındaki `CUDA Version` 13.0 veya üstü olmalı.
+- **DirectX 12 destekli her GPU (AMD, Intel, eski NVIDIA)**: DirectML yedek paketi ya da kaynaktan `kurulum.bat directml`.
+- CUDA Toolkit ya da cuDNN kurmanız **gerekmez**. CUDA 13 / cuDNN 9 çalışma zamanı pip paketleriyle gelir.
+
+### Kurulum
+
+**Seçenek A: taşınabilir paket (Python gerekmez)**
+
+1. [Son sürüm](https://github.com/BilalSonmez/DeepFaceLive/releases/latest) sayfasından bütün parçaları (`DeepFaceLive_NVIDIA.7z.001`, `.002`, ...) aynı klasöre indirin. İsterseniz daha küçük DirectX 12 paketini de kullanabilirsiniz.
+2. [7-Zip](https://www.7-zip.org/) (ya da NanaZip) kurun, `DeepFaceLive_NVIDIA.7z.001` dosyasına sağ tıklayıp **Buraya çıkart** deyin. Diğer parçalar kendiliğinden okunur.
+3. Çıkan klasörde **`baslat.bat`** dosyasına çift tıklayın. `cihaz_kontrol.bat` uygulamanın gördüğü GPU'ları listeler.
+
+**Seçenek B: kaynaktan kurulum**
+
+1. [Python 3.12 (64 bit)](https://www.python.org/downloads/) kurun, "py launcher" seçeneği açık olsun.
+2. Depoyu indirip **`kurulum.bat`** dosyasına çift tıklayın. Betik `.venv` oluşturur, `requirements-rtx50.txt` paketlerini kurar, parçalı model dosyalarını birleştirir ve ffmpeg'i indirir. DirectML için: `kurulum.bat directml`.
+3. **`baslat.bat`** ile başlatın (DirectML: `baslat.bat directml`).
+
+### Hızlı başlangıç
+
+1. **File source** (video dosyası) ya da **Camera source** modülünü açın. Taşınabilir pakette kamu malı bir örnek video var: `userdata\samples\mona_lisa_pan.mp4`.
+2. **Face detector**: YoloV5, aygıt `[CUDA]`. **Face marker**: Google FaceMesh. **Face aligner**: varsayılan ayarlar.
+3. **Face swap (DFM)**: bir model seçin. Model upstream sürümlerinden `userdata\dfm_models` klasörüne kendiliğinden iner (her biri 300-700 MB).
+4. **Face merger**: en iyi hız için aygıtı GPU (OpenCL) yapın.
+5. **Stream output**: Source = `Merged frame` seçip **window** düğmesine basın. Görüntüyü görüntülü arama uygulamalarına OBS ile (Pencere Yakalama + Sanal Kamera) verebilirsiniz.
+
+### Sorumlu kullanım
+
+DeepFaceLive'ı **yalnızca izin vermiş kişilerin yüzleriyle ve yalnızca yasal amaçlarla** kullanın. Başkasını taklit etmek, insanları kandırmak ya da dolandırmak, kimlik doğrulamayı atlatmak veya rızası olmayan ya da yanıltıcı içerik üretmek için **kullanmayın**. Deepfake, kişilik hakları ve dolandırıcılıkla ilgili yasalar sizin için de geçerlidir. Bu yazılımla ürettiğiniz içerikten siz sorumlusunuz.
+
+### Lisans ve atıf
+
+DeepFaceLive © iperov ve katkıda bulunanlar, **GPL-3.0** lisanslıdır ([LICENSE](LICENSE)). Orijinal telif bildirimleri korunmuştur. Bu fork'taki değişiklikler de aynı lisansla yayımlanır. Upstream: <https://github.com/iperov/DeepFaceLive>. Taşınabilir paketler ffmpeg (GPL, <https://ffmpeg.org>, [GyanD/codexffmpeg](https://github.com/GyanD/codexffmpeg) derlemesi) ile Python, onnxruntime, NVIDIA CUDA/cuDNN, OpenCV ve Qt çalışma zamanlarını kendi lisanslarıyla içerir.
+
+---
+
+<p align="center"><b>Original README (iperov/DeepFaceLive)</b></p>
+
 <table align="center" border="0">
 
 <tr><td colspan=2 align="center">
